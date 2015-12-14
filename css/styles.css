@@ -1,0 +1,65 @@
+html, body {
+    height: 100%;
+	width: 100%;
+    margin: 0;
+    padding: 0;
+	overflow: hidden;
+    }
+	
+.searchtext {
+	color: white;
+	margin-left:12px;
+	margin-bottom:12px;
+	font-style: 20px;
+	font-weight: bold;
+}
+.row {
+	background-color:#808080;
+	border-color: #808080;
+	}
+	
+#map {
+    height: 100%;
+	margin-left: 25%;
+	}
+		
+.searchbox { 
+	height: 22px;	
+    width: 23.4%;
+	margin-left:12px;
+	border-color: #808080;
+    }
+
+.searchbox:focus {
+    border-color: #808080;	
+    }
+	  
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 25%;
+    background-color: #808080;
+	border-color: #808080;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+li {
+    display: block;
+    color: white;
+    padding: 8px 0 8px 16px;
+    text-decoration: none;
+	font-weight:bold;
+}
+
+li .active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+li:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
