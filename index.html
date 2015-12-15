@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Neighbourhood Map New</title>
+    <title>Neighbourhood Map</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-	<link rel="stylesheet" href="css/styles.css"> 
-	
+	<link rel="stylesheet" href="css/styles.css">	
 </head>
 <body>
-	<div class="row">	
+	<div class="row">
 		<div class="col-md-6">
-			</br>						
-			<div class="searchtext" >Search Locations</div>			
-			<input id="input" class="searchbox" type="text" data-bind="value: placeToSearch, valueUpdate: 'keyup'"> 			
-		</div> 
-	</div>  	
+			</br>		
+			<div class="searchtext" >Search Locations</div>
+			<input class="searchbox" type="text" data-bind="value: placeToSearch, valueUpdate: 'keyup'">
+		</div>
+	</div>
 	<ul data-bind="foreach: places">
-		<li data-bind="text: name"></li>
-	</ul>   
-	<div id="map"></div>	
+		<li data-bind="text: name, click: $parent.listItemClicked"></li>
+	</ul>
+	<div id="map"></div>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap" async defer></script>
-    
-    
-	<script src="js/lib/knockout-3.2.0.js"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
 	<script src="js/app.js"></script>
 </body>
 </html>
