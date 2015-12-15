@@ -5,19 +5,19 @@ var autocomplete;
 
 var myViewModel = {
   neighborhoods: [   
-  {lat: 13.062342, lng: 77.587103, name: 'Sahakara Nagar, Bangalore'},
-  {lat: 13.052765, lng: 77.541899, name: 'Jalahalli, Bangalore'},
-  {lat: 12.950743, lng: 77.584777, name: 'Lalbagh Botanical Garden, Bangalore'},
-  {lat: 12.979240, lng: 77.657526, name: 'Bagmane Techpark, Bangalore'},
-  {lat: 12.925007, lng: 77.593803, name: 'Jayanagar, Bangalore'},
-  {lat: 12.910491, lng: 77.585717, name: 'J P Nagar, Bangalore'},
-  {lat: 12.985650, lng: 77.605693, name: 'Shivaji Nagar, Bangalore'},
-  {lat: 12.960986, lng: 77.638732, name: 'Domlur, Bangalore'},
-  //{lat: 13.011560, lng: 77.551360, name: 'ISKCON, Bangalore'},
-  {lat: 12.990058, lng: 77.552492, name: 'Rajaji Nagar, Bangalore'},
-  {lat: 12.971916, lng: 77.529886, name: 'VijayaNagar, Bangalore'},
-  {lat: 13.019568, lng: 77.596813, name: 'R T Nagar, Bangalore'},
-  {lat: 13.028005, lng: 77.639971, name: 'Kalyan Nagar, Bangalore'} ]
+  {id: 0, lat: 13.062342, lng: 77.587103, name: 'Sahakara Nagar, Bangalore', visibility: true},
+  {id: 1, lat: 13.052765, lng: 77.541899, name: 'Jalahalli, Bangalore', visibility: true},
+  {id: 2, lat: 12.950743, lng: 77.584777, name: 'Lalbagh Botanical Garden, Bangalore', visibility: true},
+  {id: 3, lat: 12.979240, lng: 77.657526, name: 'Bagmane Techpark, Bangalore', visibility: true},
+  {id: 4, lat: 12.925007, lng: 77.593803, name: 'Jayanagar, Bangalore', visibility: true},
+  {id: 5, lat: 12.910491, lng: 77.585717, name: 'J P Nagar, Bangalore', visibility: true},
+  {id: 6, lat: 12.985650, lng: 77.605693, name: 'Shivaji Nagar, Bangalore', visibility: true},
+  {id: 7, lat: 12.960986, lng: 77.638732, name: 'Domlur, Bangalore', visibility: true},
+  {id: 8, lat: 13.011560, lng: 77.551360, name: 'ISKCON, Bangalore', visibility: true},
+  {id: 9, lat: 12.990058, lng: 77.552492, name: 'Rajaji Nagar, Bangalore', visibility: true},
+  {id: 10, lat: 12.971916, lng: 77.529886, name: 'VijayaNagar, Bangalore', visibility: true},
+  {id: 11, lat: 13.019568, lng: 77.596813, name: 'R T Nagar, Bangalore', visibility: true},
+  {id: 12, lat: 13.028005, lng: 77.639971, name: 'Kalyan Nagar, Bangalore', visibility: true} ]  
 };
 
 function initMap() {
@@ -44,25 +44,26 @@ function initMap() {
 		}						
 	});
 	
+	/*
 	var service = new google.maps.places.PlacesService(map);
 	service.nearbySearch({
 		location: bglr,
 		radius: 20000,		
 		types: ['hindu_temple']	
 	}, callback);
-	
+	*/	
 	
 	var input = document.getElementById('input');
 	autocomplete = new google.maps.places.Autocomplete(input);
-	autocomplete.bindTo('bounds', map);
+	autocomplete.bindTo('bounds', myViewModel.neighborhoods);
 	
 	var list = document.getElementById('list');
-	autocomplete = new google.maps.places.Autocomplete(input);
-	autocomplete.bindTo('bounds', map);
+	//autocomplete = new google.maps.places.Autocomplete(input);
+	//autocomplete.bindTo('bounds', map);
 	
 	infowindow = new google.maps.InfoWindow();	
 	autocomplete.addListener('place_changed', onPlaceChanged);
-	autocomplete.addListener('click', onPlaceChanged);
+	//autocomplete.addListener('click', onPlaceChanged);
 	
 	for (var i = 0; i < myViewModel.neighborhoods.length; i++) {
 		var title = myViewModel.neighborhoods[i].name +
@@ -78,17 +79,18 @@ function initMap() {
 		var marker = new google.maps.Marker({
 		position: myViewModel.neighborhoods[i],
 		map: map,
-		title: title		
+		title: title
 		});
 		
-		markers.push(marker);				
+		markers.push(marker);	
 		marker.addListener('click', (function(markerCopy, contentCopy) {
-			return function() 
+			return function()
 			{ 			
 				animateMarker(markerCopy, contentCopy);
 			};
 		})(marker, content));
-	} 
+	}	
+	ko.applyBindings(myViewModel);  
 }
 
 
@@ -100,7 +102,6 @@ function callback(results, status) {
 		markers.push(marker);
 	}	
   }  
-  ko.applyBindings(new MyViewModel(results));  
 }
 
 
@@ -177,12 +178,19 @@ function clearMarkers() {
   setMapOnAll(null);
 }
 
+function clearMarker(marker) {
+  marker.setMap(null);
+}
+
 
 // Shows any markers currently in the array.
 function showMarkers() {
-  setMapOnAll(map);
+	setMapOnAll(map);
 }
 
+function showMarker(marker) {
+	marker.setMap(map);
+}
 
 // Deletes all markers in the array by removing references to them.
 function deleteMarkers() {
@@ -190,65 +198,29 @@ function deleteMarkers() {
   markers = [];
 }
 
-
-/*function MyViewModel(arrPlaces) {
-
-	var self = this;	
-	
-	self.placeToSearch = ko.observable("");
-    self.places = ko.observableArray([	neighborhoods[0].name,
-										neighborhoods[1].name,
-										neighborhoods[2].name,
-										neighborhoods[3].name,
-										neighborhoods[4].name,
-										neighborhoods[5].name,
-										neighborhoods[6].name,
-										neighborhoods[7].name,
-										neighborhoods[8].name,
-										neighborhoods[9].name,
-										neighborhoods[10].name,
-										neighborhoods[11].name,
-										arrPlaces[0].name,
-										arrPlaces[1].name,
-										arrPlaces[2].name,
-										arrPlaces[3].name,
-										arrPlaces[4].name,
-										arrPlaces[5].name,
-										arrPlaces[6].name,
-										arrPlaces[7].name,
-										arrPlaces[8].name,
-										arrPlaces[9].name,
-										arrPlaces[10].name,
-										arrPlaces[11].name,
-										arrPlaces[12].name,
-										arrPlaces[13].name,
-										arrPlaces[14].name,
-										arrPlaces[15].name,
-										arrPlaces[16].name,
-										arrPlaces[17].name,
-										arrPlaces[18].name,
-										arrPlaces[19].name
-									]);				
-        		 		 
-		self.searchPlace = function () {
-        //if ((self.placeToSearch() != "") && (self.places.indexOf(self.placeToSearch()) < 0)) 
-		//{
-		alert("hiii");
-		deleteMarkers();
-        //self.places.push(self.placeToSearch());
-		//}
-        //self.placeToSearch(""); // Clear the text box
-		};			
-     }
-  */
-
-myViewModel.placeToSearch = ko.observable('');
+myViewModel.placeToSearch = ko.observable("");
 
 myViewModel.places = ko.computed(function() {
     var q = myViewModel.placeToSearch();
-    return myViewModel.neighborhoods.filter(function(i) {
-      return i.name.toLowerCase().indexOf(q) >= 0;
+	  
+	return myViewModel.neighborhoods.filter(function(i) {
+		i.visibility = i.name.toLowerCase().indexOf(q) >= 0; 	  
+		var retVal = i.visibility;	  
+		return retVal;	  
     });
 });
 
-ko.applyBindings(myViewModel);  
+myViewModel.places.subscribe(function(newValue) {
+	for(var i = 0; i<myViewModel.neighborhoods.length; i++)
+	{
+	  var data = myViewModel.neighborhoods[i];
+	  if(data.visibility == true)
+	  {
+		 markers[data.id].setMap(map);
+	  }
+	  else
+	  {
+		markers[data.id].setMap(null);
+	  }
+	}
+});
