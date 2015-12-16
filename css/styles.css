@@ -8,9 +8,8 @@ html, body {
 
 .searchtext {
 	color: white;
-	margin-left:12px;
-	margin-bottom:12px;
-	font-style: 20px;
+	margin-left:16px;
+	margin-bottom:12px;	
 	font-weight: bold;
 	}
 
@@ -21,12 +20,13 @@ html, body {
 
 #map {
     height: 100%;
-	margin-left: 25%;
+	max-width: 100%;
+	margin-left: 15%;
 	}
 
 .searchbox {
 	height: 22px;
-    width: 23.4%;
+    width: 14.23%;
 	margin-left:12px;
 	border-color: #808080;
     }
@@ -39,7 +39,7 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 25%;
+    width: 15%;
     background-color: #808080;
 	border-color: #808080;
     position: fixed;
