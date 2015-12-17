@@ -3,10 +3,11 @@ var map;
 var infowindow;
 var markers = [];
 var autocomplete;
+var dataLength;
 
-//list of neighborhood places for displaying in the google map 
+//list of neighborhood places for displaying in the google map
 var myViewModel = {
-	neighborhoods: [  
+	neighborhoods: [
 	{id: 0, lat: 13.035770, lng: 77.597022, name: 'Hebbal', city: 'Bengaluru', visibility: true},
     {id: 1, lat: 13.033420, lng: 77.563976, name: 'Mathikere', city: 'Bengaluru', visibility: true},
     {id: 2, lat: 12.950743, lng: 77.584777, name: 'Lalbagh Botanical Garden', city: 'Bengaluru', visibility: true},
@@ -30,9 +31,9 @@ var myViewModel = {
 
 //This is the function initiated from the google map api
 function initMap() {
-	var bglr = {lat: 12.971599, lng: 77.594563};
+	var BGLR = {lat: 12.971599, lng: 77.594563};
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: bglr,
+		center: BGLR,
 		zoom: 12,
 		
 		mapTypeControl: true,
@@ -54,52 +55,64 @@ function initMap() {
 	});
 
 	infowindow = new google.maps.InfoWindow({maxWidth: 500});
-
-	//looping through the neighborhoods
-	for (var i = 0; i < myViewModel.neighborhoods.length; i++) {
-		var data = myViewModel.neighborhoods[i];
-		var title = data.name +	'\n' + '(' + data.lat +	', ' + data.lng + ')';		  
-		
-		var marker = new google.maps.Marker({
-			position: data,
-			map: map,
-			title: title,
-			zoom: 12
-		});
-		
-		markers.push(marker);
-		marker.addListener('click', (function(markerCopy, dataCopy) {
-			return function() {				
-				var articleList = [];
-				var wikiElem = "";
-				var content = "";
-				getContent(dataCopy.name).success(function (response) {
-					articleList = response[1];
-					
-					//Displaying only one wikipedia link for each place	  		   
-					articleStr = articleList[0];
-					var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-					wikiElem = '<a href="' + url + '">' + url + '</a>';
-					content = '<div><strong>' + data.name + ', ' + data.city +
-				    '</strong><br>' + 'Latitude : ' + data.lat +
-				    ', Longitude : ' + data.lng + '<br>' +
-				    '<strong>Relevant Wikipedia Link :</strong><br>' +
-				    wikiElem.toString() + '</div>';
-					animateMarker(markerCopy, content);
-				});
-			};
-		})(marker, data));
-	}
+	myViewModel.neighborhoods.forEach(addToMap);
 	ko.applyBindings(myViewModel);
 }
 
+//adding the neighborhood places to map
+function addToMap(data)
+{
+	var title = data.name +	'\n' + '(' + data.lat +	', ' + data.lng + ')';	
+	var marker = new google.maps.Marker({
+		position: data,
+		map: map,
+		title: title,
+		zoom: 12
+	});
+	
+	markers.push(marker);
+	marker.addListener('click', (function(markerCopy, dataCopy) {
+		resetInfoWindows();
+		return function() {
+			var articleList = [];
+			var wikiElem = "";
+			var content = "";
+			
+			//Wait period of 2000ms given for wikipedia link search
+			var wikiRequestTimeout = setTimeout(function(){
+				clearTimeout(wikiRequestTimeout);
+				errorContentDisplay(dataCopy);
+				}, 2000);
+
+			getContent(dataCopy.name).success(function (response) {
+				articleList = response[1];
+				articleStr = articleList[0];
+				var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+				wikiElem = '<a href="' + url + '">' + url + '</a>';
+				content = '<div><strong>' + dataCopy.name + ', ' + dataCopy.city +
+						  '</strong><br>' + 'Latitude : ' + dataCopy.lat +
+						  ', Longitude : ' + dataCopy.lng + '<br>' +
+						  '<strong>Relevant Wikipedia Link :</strong><br>' +
+						  wikiElem.toString() + '</div>';
+				clearTimeout(wikiRequestTimeout);
+				animateMarker(markers[dataCopy.id], content);
+			})
+			.error(function(e) {
+				clearTimeout(wikiRequestTimeout);
+				errorContentDisplay(dataCopy);
+			})
+		};
+	})(marker, data));
+}
+
 //Callback function
+//This function creates markers and pushes it to the markers list
 function callback(results, status) {
 	if (status === google.maps.places.PlacesServiceStatus.OK) {
-		for (var i = 0; i < results.length; i++) {
-			var marker = createMarker(results[i]);	
+		results.forEach(function(data) {
+			var marker = createMarker(data);
 			markers.push(marker);
-		}
+		});
 	}
 }
 
@@ -109,7 +122,7 @@ function createMarker(place,icon) {
 	var placeLoc = place.geometry.location;
 	var title = place.name + '\n' + placeLoc;
 	var content = '<div><strong>' + place.name + '</strong><br>' + place.vicinity +'</div>';
-	
+
     var marker = new google.maps.Marker({
 		map: map,
 		position: placeLoc,
@@ -118,6 +131,7 @@ function createMarker(place,icon) {
 	});
 
 	google.maps.event.addListener(marker, 'click', function() {
+		resetInfoWindows();
 		animateMarker(marker, content);
 	});
 	return marker;
@@ -132,7 +146,6 @@ function animateMarker(marker, content) {
 	marker.setAnimation(google.maps.Animation.BOUNCE);
 	window.setTimeout(function() {
 		marker.setAnimation(null);
-		//infowindow.close();
 	}, 2200);
 }
 
@@ -152,28 +165,34 @@ myViewModel.places = ko.computed(function() {
 
 //This function is used to hide/show the markers based on the list contents
 myViewModel.places.subscribe(function(newValue) {
-	for(var i = 0; i<myViewModel.neighborhoods.length; i++)	{
-		var data = myViewModel.neighborhoods[i];
+	resetInfoWindows();
+	myViewModel.neighborhoods.forEach(function(data) {
 		if(data.visibility == true) {
 			markers[data.id].setMap(map);
-	    }
-	    else {
+		}
+		else {
 			markers[data.id].setMap(null);
 		}
-	}
+	});
 });
 
 //This function is called when any list item is clicked
 //It calls the animateMarker function to animate
 //the corresponding marker and display the info window
 myViewModel.listItemClicked = function(data) {
+	resetInfoWindows();
 	var articleList = [];
 	var wikiElem = "";
 	var content = "";
+
+	//Wait period of 2000ms given for wikipedia link search
+	var wikiRequestTimeout = setTimeout(function() {
+		clearTimeout(wikiRequestTimeout);
+		errorContentDisplay(data);
+		}, 2000);
+
 	getContent(data.name).success(function (response) {
 		articleList = response[1];
-		
-		//Displaying only one wikipedia link for each place
 		articleStr = articleList[0];
 		var url = 'http://en.wikipedia.org/wiki/' + articleStr;
 		wikiElem = '<a href="' + url + '">' + url + '</a>';
@@ -182,8 +201,13 @@ myViewModel.listItemClicked = function(data) {
 				  ', Longitude : ' + data.lng + '<br>' +
 				  '<strong>Relevant Wikipedia Link :</strong><br>' +
 				  wikiElem.toString() + '</div>';
+		clearTimeout(wikiRequestTimeout);
 		animateMarker(markers[data.id], content);
-	});
+	})
+	.error(function(e) {
+		clearTimeout(wikiRequestTimeout);
+		errorContentDisplay(data);
+	})
 };
 
 //This function contains an AJAX request to third-party server Wikipedia
@@ -192,5 +216,21 @@ function getContent(data) {
 	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + data + '&format=json&callback=wikiCallback';
 	return $.ajax(wikiUrl, {
 		dataType: 'jsonp'
-	});
+	})
+}
+
+//Error message is displayed, if error occured during wikipedia link search
+function errorContentDisplay(data) {
+	resetInfoWindows();
+	alert('Error while fetching the wikipedia link');
+	content = '<div><strong>' + data.name + ', ' + data.city +
+			  '</strong><br>' + 'Latitude : ' + data.lat +
+			  ', Longitude : ' + data.lng + '<br>' +
+			  '<strong>Relevant Wikipedia Link not found</strong><br></div>';
+	animateMarker(markers[data.id], content);
+}
+
+//This function is used to close the already open ifo window
+function resetInfoWindows() {
+	infowindow.close();
 }

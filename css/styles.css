@@ -9,7 +9,7 @@ html, body {
 .searchtext {
 	color: white;
 	margin-left:16px;
-	margin-bottom:12px;	
+	margin-bottom:12px;
 	font-weight: bold;
 	}
 
@@ -32,12 +32,12 @@ html, body {
     }
 
 .searchbox:focus {
-    border-color: #808080;	
+    border-color: #808080;
     }
 
 ul {
     list-style-type: none;
-    margin: 0;
+    margin: 0px;
     padding: 0;
     width: 15%;
     background-color: #808080;
@@ -63,4 +63,22 @@ li .active {
 li:hover:not(.active) {
     background-color: #555;
     color: white;
+}
+
+@media (max-width:580px) {
+	ul {
+		display: none;
+	}
+	#map {
+		margin-left: 0px;
+	}
+	.searchtext {
+		margin-bottom: 0px;
+	}
+}
+
+@media (max-width:870px) {
+	.searchbox {
+		width: 120px;
+	}
 }
