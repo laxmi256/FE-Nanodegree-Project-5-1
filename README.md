@@ -22,3 +22,8 @@ Neighborhood Map Project
 9. A zoomControl and streetViewControl are provided on the top left corner of the google map.
 
 9. A mapTypeControl is provided on the top right corner of the google map.
+
+10. In small screen the list of places on the left side of the map will be hidden.
+
+11. If needed while taking small screen, the user can click on the hamburger icon on the top right corner to display
+    the list of places and it can be hidden again by clicking on the click again.

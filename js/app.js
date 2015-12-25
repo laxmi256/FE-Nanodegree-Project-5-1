@@ -2,8 +2,6 @@
 var map;
 var infowindow;
 var markers = [];
-var autocomplete;
-var dataLength;
 
 //list of neighborhood places for displaying in the google map
 var myViewModel = {
@@ -75,8 +73,8 @@ function addToMap(data)
 		resetInfoWindows();
 		return function() {
 			var articleList = [];
-			var wikiElem = "";
-			var content = "";
+			var wikiElem = '';
+			var content = '';
 			
 			//Wait period of 2000ms given for wikipedia link search
 			var wikiRequestTimeout = setTimeout(function(){
@@ -86,7 +84,7 @@ function addToMap(data)
 
 			getContent(dataCopy.name).success(function (response) {
 				articleList = response[1];
-				articleStr = articleList[0];
+				var articleStr = articleList[0];
 				var url = 'http://en.wikipedia.org/wiki/' + articleStr;
 				wikiElem = '<a href="' + url + '">' + url + '</a>';
 				content = '<div><strong>' + dataCopy.name + ', ' + dataCopy.city +
@@ -100,7 +98,7 @@ function addToMap(data)
 			.error(function(e) {
 				clearTimeout(wikiRequestTimeout);
 				errorContentDisplay(dataCopy);
-			})
+			});
 		};
 	})(marker, data));
 }
@@ -150,7 +148,7 @@ function animateMarker(marker, content) {
 }
 
 //the text in the search box is set to null
-myViewModel.placeToSearch = ko.observable("");
+myViewModel.placeToSearch = ko.observable('');
 
 //This function is used to filter the list contents based on the value in the search box
 //Also sets the visibility of each list value accordingly
@@ -167,7 +165,7 @@ myViewModel.places = ko.computed(function() {
 myViewModel.places.subscribe(function(newValue) {
 	resetInfoWindows();
 	myViewModel.neighborhoods.forEach(function(data) {
-		if(data.visibility == true) {
+		if(data.visibility === true) {
 			markers[data.id].setMap(map);
 		}
 		else {
@@ -182,8 +180,8 @@ myViewModel.places.subscribe(function(newValue) {
 myViewModel.listItemClicked = function(data) {
 	resetInfoWindows();
 	var articleList = [];
-	var wikiElem = "";
-	var content = "";
+	var wikiElem = '';
+	var content = '';
 
 	//Wait period of 2000ms given for wikipedia link search
 	var wikiRequestTimeout = setTimeout(function() {
@@ -193,7 +191,7 @@ myViewModel.listItemClicked = function(data) {
 
 	getContent(data.name).success(function (response) {
 		articleList = response[1];
-		articleStr = articleList[0];
+		var articleStr = articleList[0];
 		var url = 'http://en.wikipedia.org/wiki/' + articleStr;
 		wikiElem = '<a href="' + url + '">' + url + '</a>';
 		content = '<div><strong>' + data.name + ', ' + data.city +
@@ -207,7 +205,7 @@ myViewModel.listItemClicked = function(data) {
 	.error(function(e) {
 		clearTimeout(wikiRequestTimeout);
 		errorContentDisplay(data);
-	})
+	});
 };
 
 //This function contains an AJAX request to third-party server Wikipedia
@@ -216,14 +214,14 @@ function getContent(data) {
 	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + data + '&format=json&callback=wikiCallback';
 	return $.ajax(wikiUrl, {
 		dataType: 'jsonp'
-	})
+	});
 }
 
 //Error message is displayed, if error occured during wikipedia link search
 function errorContentDisplay(data) {
 	resetInfoWindows();
 	alert('Error while fetching the wikipedia link');
-	content = '<div><strong>' + data.name + ', ' + data.city +
+	var content = '<div><strong>' + data.name + ', ' + data.city +
 			  '</strong><br>' + 'Latitude : ' + data.lat +
 			  ', Longitude : ' + data.lng + '<br>' +
 			  '<strong>Relevant Wikipedia Link not found</strong><br></div>';

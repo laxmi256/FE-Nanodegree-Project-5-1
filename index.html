@@ -1,39 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
     <title>Neighborhood Map</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-	<link rel="stylesheet" href="css/styles.css">
+    <meta name='viewport' content='initial-scale=1.0, user-scalable=no'>
+    <meta charset='utf-8'>	
+	<link rel='stylesheet' href='css/styles.css'>
 </head>
-<body>   
- <a id="menu">
-         <button style="float: right;">===</button>
+<body>
+	<header class='header'>
+      <div class='header__inner'>  
+        <a id='menu' class='header__menu'>
+          <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
+            <path d='M2 6h20v3H2zm0 5h20v3H2zm0 5h20v3H2z'/>
+          </svg>
         </a>
-	<div class="row">		 
-		<div class="col-md-6">
-			</br>
-			<div class="searchtext" >Search Locations</div>
-			<input class="searchbox" type="text" data-bind="value: placeToSearch, valueUpdate: 'keyup'">
-		</div>
+      </div>
+    </header>	
+	<div class='row'>
+		<div class='col-md-6'>
+			<div class='searchtext' >Search Locations</div>
+			<input class='searchbox' type='text' data-bind="value: placeToSearch, valueUpdate: 'keyup'">			
+		</div>		
 	</div>
-	
-     <ul class="listdata" data-bind="foreach: places">
-		<li data-bind="text: name, click: $parent.listItemClicked"></li>
-	</ul>
-	
-	<div id="map"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap" async defer></script>
-    <script src="js/lib/knockout-3.2.0.js"></script>
-	<script src="js/app.js"></script>
-	<script src="js/lib/jquery.min.js"></script>
-	 <script>
+    <nav id='drawer' class='nav'>	
+		<ul class='nav__list' data-bind='foreach: places'>
+			<li class='listdata' data-bind='text: name, click: $parent.listItemClicked'></li>
+		</ul>    
+    </nav> 	
+	<div id='map'></div>
+    <script src='https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap' async defer></script>
+    <script src='js/lib/knockout-3.2.0.js'></script>
+	<script src='js/app.js'></script>
+	<script src='js/lib/jquery.min.js'></script>
+	<script>
+	  /*
+       * Open the drawer when the hamburger menu icon is clicked.
+       */
       var menu = document.querySelector('#menu');
+      var drawer = document.querySelector('.nav');
 
-      menu.addEventListener('click', function(e) {		
-		$('ul').slideToggle('slow');
+      menu.addEventListener('click', function(e) {
+        drawer.classList.toggle('open');
+        e.stopPropagation();
       });
-
     </script>
 </body>
 </html>

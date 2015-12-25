@@ -4,20 +4,20 @@ html, body {
     margin: 0;
     padding: 0;
 	overflow: hidden;
-	background-color: #808080;
+	background-color:#808080;
+	border-color: #808080;
     }
 	
-button {
-	background-color: #808080;
-	display: none;
-	border: #808080;
-}
+.header__title {
+	text-align: center;
+	}
 
 .searchtext {
 	color: white;
-	margin-left:16px;
+	margin-left:12px;
 	margin-bottom:12px;
 	font-weight: bold;
+	font-size: 22px;
 	}
 
 .row {
@@ -25,15 +25,9 @@ button {
 	border-color: #808080;
 	}
 
-#map {
-    height: 100%;
-	max-width: 100%;
-    margin-left: 15%;
-	}
-
 .searchbox {
 	height: 22px;
-    width: 14.23%;
+    width: 168px;
 	margin-left:12px;
 	border-color: #808080;
     }
@@ -42,56 +36,131 @@ button {
     border-color: #808080;
     }
 
-ul {
+.nav {
     list-style-type: none;
     margin: 0px;
     padding: 0;
-    width: 15%;
+    background-color: #808080;
+	border-color: #808080;
     position: fixed;
     height: 100%;
     overflow: auto;
-	background-color: transparent;
-}
-
-li {
-    display: block;
-    color: white;
-    padding: 8px 0 8px 16px;
-    text-decoration: none;
-	font-weight:bold;
-}
+	}
 
 li .active {
     background-color: #4CAF50;
     color: white;
-}
+	}
 
 li:hover:not(.active) {
     background-color: #555;
     color: white;
-}
+	}
 
-@media (max-width:580px) {
-	ul {
-		display: none;
-		width: 50%;
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
 	}
-	
-	button {
-	display: block;
-	}	
-	
-	#map {
-		margin-left: 50%;
+
+.header {
+	min-height: 56px;
+	transition: min-height 0.3s;
 	}
-	
+
+.header__menu {
+	display: none;
+	}
+
+.header__inner {
+	width: 20%;
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+.nav {
+	width: 180px;
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+.nav__list {
+	width: 180px;
+	max-width: 100%;
+	padding: 0;
+	margin: 0;
+	}
+
+.listdata {
+	box-sizing: border-box;
+	display: list-item;
+	width: 100%;
+	text-align: left;
+	line-height: 24px;
+	text-transform: uppercase;
+	background-color:#808080;
+	border-color: #808080;
+	color: white;
+	padding: 8px 0 8px 16px;
+	text-decoration: none;
+	font-weight:bold;
+	padding: 8px 0 8px 16px;
+	}
+
+#map {
+    height: 100%;
+	max-width: 100%;
+	margin-left: 180px;
+	}
+
+@media screen and (max-width: 550px) {
+	.header__title {
+	text-align: center;
+	}
+	.nav {
+		z-index: 10;
+		background-color: #fff;
+		/*width: 300px;*/
+		position: absolute;
+		/* This trasform moves the drawer off canvas. */
+		-webkit-transform: translate(-300px, 0);
+		transform: translate(-300px, 0);
+		/* Optionally, we animate the drawer. */
+		transition: transform 0.3s ease;
+	}
+
+	.nav.open {
+		-webkit-transform: translate(0, 0);
+		transform: translate(0, 0);
+		background-color:#808080;
+		border-color: #808080;
+	}
+
+	.listdata {
+		display: list-item;
+		width: 100%;
+		text-align: left;
+	}
+
+	.header__menu {
+		display: block;
+		position: absolute;
+		right: 0;
+		padding: 1em;
+	}
+
+	.header__menu svg {
+		width: 32px;
+		fill: #E0E0E0;
+	}
+
 	.searchtext {
 		margin-bottom: 0px;
 	}
-}
 
-@media (max-width:870px) {
-	.searchbox {
-		width: 120px;
+	#map {
+		height: 100%;
+		max-width: 100%;
+		margin-left: 0px;
 	}
 }
