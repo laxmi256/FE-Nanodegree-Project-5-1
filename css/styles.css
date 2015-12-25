@@ -4,7 +4,14 @@ html, body {
     margin: 0;
     padding: 0;
 	overflow: hidden;
+	background-color: #808080;
     }
+	
+button {
+	background-color: #808080;
+	display: none;
+	border: #808080;
+}
 
 .searchtext {
 	color: white;
@@ -21,7 +28,7 @@ html, body {
 #map {
     height: 100%;
 	max-width: 100%;
-	margin-left: 15%;
+    margin-left: 15%;
 	}
 
 .searchbox {
@@ -40,11 +47,10 @@ ul {
     margin: 0px;
     padding: 0;
     width: 15%;
-    background-color: #808080;
-	border-color: #808080;
     position: fixed;
     height: 100%;
     overflow: auto;
+	background-color: transparent;
 }
 
 li {
@@ -68,10 +74,17 @@ li:hover:not(.active) {
 @media (max-width:580px) {
 	ul {
 		display: none;
+		width: 50%;
 	}
+	
+	button {
+	display: block;
+	}	
+	
 	#map {
-		margin-left: 0px;
+		margin-left: 50%;
 	}
+	
 	.searchtext {
 		margin-bottom: 0px;
 	}

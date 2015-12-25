@@ -6,21 +6,34 @@
     <meta charset="utf-8">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-	<div class="row">
+<body>   
+ <a id="menu">
+         <button style="float: right;">===</button>
+        </a>
+	<div class="row">		 
 		<div class="col-md-6">
 			</br>
 			<div class="searchtext" >Search Locations</div>
 			<input class="searchbox" type="text" data-bind="value: placeToSearch, valueUpdate: 'keyup'">
 		</div>
 	</div>
-	<ul class="listdata" data-bind="foreach: places">
+	
+     <ul class="listdata" data-bind="foreach: places">
 		<li data-bind="text: name, click: $parent.listItemClicked"></li>
 	</ul>
+	
 	<div id="map"></div>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap" async defer></script>
     <script src="js/lib/knockout-3.2.0.js"></script>
 	<script src="js/app.js"></script>
 	<script src="js/lib/jquery.min.js"></script>
+	 <script>
+      var menu = document.querySelector('#menu');
+
+      menu.addEventListener('click', function(e) {		
+		$('ul').slideToggle('slow');
+      });
+
+    </script>
 </body>
 </html>
